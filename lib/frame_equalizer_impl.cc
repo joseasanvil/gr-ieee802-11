@@ -52,6 +52,9 @@ frame_equalizer_impl::frame_equalizer_impl(
 {
 
     message_port_register_out(pmt::mp("symbols"));
+    message_port_register_out(pmt::mp("pilots"));
+    message_port_register_out(pmt::mp("chan_est_samples"));
+    message_port_register_out(pmt::mp("csi"));
 
     d_bpsk = constellation_bpsk::make();
     d_qpsk = constellation_qpsk::make();
@@ -62,6 +65,8 @@ frame_equalizer_impl::frame_equalizer_impl(
 
     set_tag_propagation_policy(block::TPP_DONT);
     set_algorithm(algo);
+    d_have_chan_est_samples[0] = false;
+    d_have_chan_est_samples[1] = false;
 }
 
 frame_equalizer_impl::~frame_equalizer_impl() {}
@@ -141,6 +146,8 @@ int frame_equalizer_impl::general_work(int noutput_items,
             d_current_symbol = 0;
             d_frame_symbols = 0;
             d_frame_mod = d_bpsk;
+            d_have_chan_est_samples[0] = false;
+            d_have_chan_est_samples[1] = false;
 
             d_freq_offset_from_synclong =
                 pmt::to_double(tags.front().value) * d_bw / (2 * M_PI);
@@ -196,16 +203,35 @@ int frame_equalizer_impl::general_work(int noutput_items,
             d_prev_pilots[3] = current_symbol[53] * -p;
         }
 
+        if (d_current_symbol >= 2) {
+            gr_complex pilot_vals[4] = {
+                current_symbol[11],
+                current_symbol[25],
+                current_symbol[39],
+                current_symbol[53],
+            };
+            std::memcpy(d_pilot_vals, pilot_vals, sizeof(pilot_vals));
+        }
+
         // compensate residual frequency offset
         for (int i = 0; i < 64; i++) {
             current_symbol[i] *= exp(gr_complex(0, -beta));
         }
+
+        
 
         // update estimate of residual frequency offset
         if (d_current_symbol >= 2) {
 
             double alpha = 0.1;
             d_er = (1 - alpha) * d_er + alpha * er;
+        }
+
+        if (d_current_symbol < 2) {
+            std::memcpy(d_chan_est_samples[d_current_symbol],
+                        current_symbol,
+                        64 * sizeof(gr_complex));
+            d_have_chan_est_samples[d_current_symbol] = true;
         }
 
         // do equalization
@@ -216,7 +242,6 @@ int frame_equalizer_impl::general_work(int noutput_items,
         if (d_current_symbol == 2) {
 
             if (decode_signal_field(out + o * 48)) {
-
                 pmt::pmt_t dict = pmt::make_dict();
                 dict = pmt::dict_add(
                     dict, pmt::mp("frame bytes"), pmt::from_uint64(d_frame_bytes));
@@ -234,6 +259,28 @@ int frame_equalizer_impl::general_work(int noutput_items,
                 std::vector<gr_complex> csi = d_equalizer->get_csi();
                 dict = pmt::dict_add(
                     dict, pmt::mp("csi"), pmt::init_c32vector(csi.size(), csi));
+                std::memcpy(d_csi, csi.data(), csi.size() * sizeof(gr_complex));
+
+                message_port_pub(
+                pmt::mp("pilots"),
+                pmt::cons(pmt::make_dict(), pmt::init_c32vector(4, d_pilot_vals)));
+
+                message_port_pub(
+                pmt::mp("csi"),
+                pmt::cons(pmt::make_dict(), pmt::init_c32vector(csi.size(), d_csi)));
+
+
+                for (int idx = 0; idx < 2; idx++) {
+                    if (!d_have_chan_est_samples[idx]) {
+                        continue;
+                    }
+                    pmt::pmt_t meta = pmt::make_dict();
+                    meta = pmt::dict_add(meta, pmt::mp("symbol"), pmt::from_long(idx));
+                    message_port_pub(
+                        pmt::mp("chan_est_samples"),
+                        pmt::cons(meta,
+                                  pmt::init_c32vector(64, d_chan_est_samples[idx])));
+                }
 
                 pmt::pmt_t pairs = pmt::dict_items(dict);
                 for (int i = 0; i < pmt::length(pairs); i++) {

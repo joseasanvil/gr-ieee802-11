@@ -44,6 +44,15 @@ outputs:
 -   domain: message
     id: symbols
     optional: true
+-   domain: message
+    id: pilots
+    optional: true
+-   domain: message
+    id: chan_est_samples
+    optional: true
+-   domain: message
+    id: csi
+    optional: true
 
 templates:
     imports: import ieee802_11

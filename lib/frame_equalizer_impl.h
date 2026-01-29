@@ -67,7 +67,10 @@ private:
     int d_frame_bytes;
     int d_frame_symbols;
     int d_frame_encoding;
-
+    gr_complex d_pilot_vals[4];
+    gr_complex d_csi[52];
+    gr_complex d_chan_est_samples[2][64];
+    bool d_have_chan_est_samples[2];
     uint8_t d_deinterleaved[48];
     gr_complex symbols[48];
 
