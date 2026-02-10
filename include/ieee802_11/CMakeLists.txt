@@ -20,6 +20,7 @@ install(FILES
     mac.h
     mapper.h
     parse_mac.h
+    pilot_csi_dataset.h
     signal_field.h
     sync_long.h
     sync_short.h

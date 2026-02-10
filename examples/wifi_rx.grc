@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"usb:2.7.5"'
+    value: '"usb:2.6.5"'
   states:
     bus_sink: false
     bus_source: false
@@ -140,7 +140,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '3400000000'
+    value: '3100000000'
   states:
     bus_sink: false
     bus_source: false
@@ -160,7 +160,7 @@ blocks:
     start: '0'
     step: '1'
     stop: '80'
-    value: '75'
+    value: '50'
     widget: counter_slider
   states:
     bus_sink: false
@@ -317,7 +317,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [172.0, 472]
+    coordinate: [148.0, 472]
     rotation: 270
     state: enabled
 - name: blocks_delay_0_0
@@ -559,7 +559,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [328, 524.0]
+    coordinate: [288, 524.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_sync_short_0
@@ -610,6 +610,29 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [88, 168.0]
+    rotation: 0
+    state: disabled
+- name: network_udp_source_0
+  id: network_udp_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    header: '0'
+    ipv6: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    notify_missed: 'False'
+    payloadsize: '1472'
+    port: '2000'
+    src_zeros: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [88, 200.0]
     rotation: 0
     state: enabled
 - name: pdu_pdu_to_tagged_stream_0
@@ -850,7 +873,36 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [464, 636.0]
+    coordinate: [384, 636.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_sink_x_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '"Raw Signal"'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: complex
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [216, 664.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0
@@ -1335,9 +1387,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 776.0]
+    coordinate: [376, 792.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_waterfall_sink_x_0
   id: qtgui_waterfall_sink_x
   parameters:
@@ -1367,7 +1419,7 @@ blocks:
     color9: '0'
     comment: ''
     fc: '0'
-    fftsize: '1024'
+    fftsize: '64'
     freqhalf: 'True'
     grid: 'False'
     gui_hint: ''
@@ -1396,9 +1448,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [464, 700.0]
+    coordinate: [384, 708.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: uhd_usrp_source_0
   id: uhd_usrp_source
   parameters:
@@ -1862,6 +1914,7 @@ connections:
 - [ieee802_11_frame_equalizer_0, symbols, pdu_pdu_to_tagged_stream_0, pdus]
 - [ieee802_11_sync_long_0, '0', blocks_stream_to_vector_0, '0']
 - [ieee802_11_sync_long_0, '0', qtgui_freq_sink_x_0, '0']
+- [ieee802_11_sync_long_0, '0', qtgui_sink_x_0, '0']
 - [ieee802_11_sync_long_0, '0', qtgui_time_sink_x_1_1, '0']
 - [ieee802_11_sync_long_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [ieee802_11_sync_short_0, '0', blocks_delay_0, '0']
@@ -1869,6 +1922,9 @@ connections:
 - [iio_pluto_source_0, '0', blocks_complex_to_mag_squared_0, '0']
 - [iio_pluto_source_0, '0', blocks_delay_0_0, '0']
 - [iio_pluto_source_0, '0', blocks_multiply_xx_0, '0']
+- [network_udp_source_0, '0', blocks_complex_to_mag_squared_0, '0']
+- [network_udp_source_0, '0', blocks_delay_0_0, '0']
+- [network_udp_source_0, '0', blocks_multiply_xx_0, '0']
 - [pdu_pdu_to_tagged_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [pdu_pdu_to_tagged_stream_0_0, '0', qtgui_time_sink_x_1, '0']
 - [pdu_pdu_to_tagged_stream_0_0_0, '0', qtgui_time_sink_x_1_0, '0']

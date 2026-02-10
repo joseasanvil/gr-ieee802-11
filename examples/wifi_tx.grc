@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"usb:2.6.5"'
+    value: '"usb:2.5.5"'
   states:
     bus_sink: false
     bus_source: false
@@ -141,7 +141,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '3400000000'
+    value: '3100000000'
   states:
     bus_sink: false
     bus_source: false
@@ -158,7 +158,7 @@ blocks:
     min_len: '200'
     orient: QtCore.Qt.Horizontal
     rangeType: int
-    start: '10'
+    start: '0'
     step: '1'
     stop: '1000'
     value: '300'
@@ -309,7 +309,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    msg: pmt.intern("Hello World")
+    msg: pmt.intern("yyyyyyyyyy")
     period: interval
   states:
     bus_sink: false
@@ -373,7 +373,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [232, 580.0]
+    coordinate: [232, 568.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_mac_0
@@ -417,9 +417,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [704, 640.0]
+    coordinate: [392, 552.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: network_socket_pdu_0
   id: network_socket_pdu
   parameters:
@@ -440,6 +440,26 @@ blocks:
     coordinate: [136, 264.0]
     rotation: 0
     state: true
+- name: network_udp_sink_0
+  id: network_udp_sink
+  parameters:
+    addr: 127.0.0.1
+    affinity: ''
+    alias: ''
+    comment: ''
+    header: '0'
+    payloadsize: '1472'
+    port: '2000'
+    send_eof: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 704.0]
+    rotation: 0
+    state: enabled
 - name: osmosdr_sink_0
   id: osmosdr_sink
   parameters:
@@ -975,7 +995,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [560, 556.0]
+    coordinate: [400, 548.0]
     rotation: 0
     state: disabled
 - name: wifi_phy_hier_0
@@ -1005,6 +1025,7 @@ connections:
 - [blocks_multiply_const_vxx_0, '0', foo_packet_pad2_0, '0']
 - [blocks_vector_source_x_0, '0', wifi_phy_hier_0, '0']
 - [foo_packet_pad2_0, '0', iio_pluto_sink_0, '0']
+- [foo_packet_pad2_0, '0', network_udp_sink_0, '0']
 - [foo_packet_pad2_0, '0', osmosdr_sink_0, '0']
 - [foo_packet_pad2_0, '0', uhd_usrp_sink_0, '0']
 - [ieee802_11_mac_0, phy out, wifi_phy_hier_0, mac_in]
