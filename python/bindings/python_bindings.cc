@@ -30,7 +30,6 @@ void bind_frame_equalizer(py::module& m);
 void bind_mac(py::module& m);
 void bind_mapper(py::module& m);
 void bind_parse_mac(py::module& m);
-void bind_pilot_csi_dataset(py::module& m);
 void bind_signal_field(py::module& m);
 void bind_sync_long(py::module& m);
 void bind_sync_short(py::module& m);
@@ -73,7 +72,6 @@ PYBIND11_MODULE(ieee802_11_python, m)
     bind_mac(m);
     bind_mapper(m);
     bind_parse_mac(m);
-    bind_pilot_csi_dataset(m);
     bind_signal_field(m);
     bind_sync_long(m);
     bind_sync_short(m);

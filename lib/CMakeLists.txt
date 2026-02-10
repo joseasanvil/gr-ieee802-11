@@ -35,7 +35,6 @@ list(APPEND ieee802_11_sources
     mac.cc
     mapper_impl.cc
     parse_mac.cc
-    pilot_csi_dataset_impl.cc
     signal_field_impl.cc
     sync_long.cc
     sync_short.cc
